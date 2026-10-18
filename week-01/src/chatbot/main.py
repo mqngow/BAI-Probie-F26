@@ -17,6 +17,7 @@ Functional Programming Approach:
 
 from typing import List
 
+from src.settings import settings
 from src.chatbot.models import ChatMessage
 from src.chatbot.api import create_client, get_chat_response, create_system_message
 from src.chatbot import ui
@@ -54,7 +55,7 @@ def run_conversation_loop() -> None:
     """
     
     # TODO: Create OpenAI client
-    
+    client = create_client(settings)
     
     # TODO: Initialize conversation history
     # Instructions:
@@ -63,7 +64,7 @@ def run_conversation_loop() -> None:
     # 3. This list will grow as the conversation progresses
     #
     # Hint: conversation_history should be a List[ChatMessage] type
-    
+    conversation_history = [create_system_message()]
     
     ui.display_welcome()
     
@@ -84,14 +85,17 @@ def run_conversation_loop() -> None:
                 continue
             
             # TODO: Create and store user message
-            # Code here
+            conversation_history.append(ChatMessage(role='user', content = user_input))
             
             ui.display_loading()
             
             # TODO: Get AI response from OpenAI and display it
             # Code here
+            model = getattr(settings, "model", "gpt-4o-mini")
+            response = get_chat_response(client=client, messages=conversation_history, model=model)
+            conversation_history.append(response)
 
-            ui.display_assistant_message("NOT IMPLEMENTED YET")
+            ui.display_assistant_message(response.content)
             
         except KeyboardInterrupt:
             ui.display_goodbye()

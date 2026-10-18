@@ -47,7 +47,7 @@ def create_client(settings: Settings) -> OpenAI:
     Returns:
         OpenAI: OpenAI Client Instance
     """
-    return OpenAI(api_key=settings.openai_api_key)
+    return OpenAI(api_key=settings.OPENAI_API_KEY)
 
 
 # TODO: Implement get_chat_response function
