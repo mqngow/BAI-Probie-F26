@@ -40,6 +40,15 @@ from src.chatbot.models import ChatMessage
 # Your code here:
 # def create_client() -> ...:
 
+def create_client(settings: Settings) -> OpenAI:
+    """Create and return an OpenAI client configured with the provided settings.
+    Args:
+        settings (Settings): Application configuration containing the OpenAI API key.
+    Returns:
+        OpenAI: OpenAI Client Instance
+    """
+    return OpenAI(api_key=settings.openai_api_key)
+
 
 # TODO: Implement get_chat_response function
 # This is the main function that sends messages to OpenAI and gets a response.
