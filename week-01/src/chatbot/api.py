@@ -16,7 +16,7 @@ Key Concepts:
 from openai import OpenAI
 from typing import List
 
-from src.settings import settings
+from src.settings import Settings, settings
 from src.chatbot.constants import SYSTEM_PROMPT
 from src.chatbot.models import ChatMessage
 
@@ -98,7 +98,30 @@ def create_client(settings: Settings) -> OpenAI:
 #         raise
 #
 # Your code here:
+def get_chat_response(client: OpenAI, messages: List[ChatMessage], model: str) -> ChatMessage:
+    """ Sends messages to the client and receives responses
 
+    Args:
+        client (OpenAI): client we are contacting
+        messages (List[ChatMessage]): List of chat messages
+        model (str): which model to choose
+
+    Returns:
+        ChatMessage: The response chat message
+    """
+    try:
+        message_dicts = [message.model_dump() for message in messages]
+
+        response = client.chat.completions.create(
+            model=model,
+            messages=message_dicts
+        )    
+
+        return ChatMessage(role=response.choices[0].message.role, content=response.choices[0].message.content or "")
+    
+    except Exception as e:
+        print(f"Error calling OpenAI API: {e}")
+        raise
 
 # TODO: Implement create_system_message function (Helper Function)
 # This helper function creates the system message that defines the chatbot's personality.
@@ -114,4 +137,11 @@ def create_client(settings: Settings) -> OpenAI:
 #   system_msg = create_system_message()
 #
 # Your code here:
+def create_system_message() -> ChatMessage:
+    """Creates a system message to define the chatbot's personality.
+
+    Returns:
+        ChatMessage: System message that gives the initial configuration prompt.
+    """
+    return ChatMessage(role='system', content=SYSTEM_PROMPT)
 
